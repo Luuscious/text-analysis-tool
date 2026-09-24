@@ -35,9 +35,20 @@ def getUsername():
 def greetUser(name):
     print("Hello, " + name)
 
-def runProgram():
-    welcomeUser()
-    username = getUsername()
-    greetUser(username)
+#Get text from file
+def getArticleText():
+     f = open("files/article.txt", "r")
+     rawText = f.read()
+     f.close()
+     return rawText.replace("\n", " ").replace("\r", "")
 
-runProgram()
+# def runProgram():
+#     welcomeUser()
+#     username = getUsername()
+#     greetUser(username)
+
+# runProgram()
+
+articleTextRaw = getArticleText()
+print("GOT:")
+print(articleTextRaw)
