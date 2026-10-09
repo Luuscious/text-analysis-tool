@@ -63,19 +63,26 @@ def extractKeySentences(sentences, searchPattern):
                matchedSentences.append(sentences)
           return matchedSentences
 
+#Get the average words per sentence, excluding punctuation
+def getWordsPerSentence(sentences):
+     totalWords = 0
+     for sentence in sentences:
+          totalWords += len(sentence.split(" "))
+     return totalWords / len(sentences)
 # Get User Details
-welcomeUser()
-username = getUsername()
-greetUser(username)
+    # welcomeUser()
+    # username = getUsername()
+    # greetUser(username)
 
 #Extracting and Tokenizing text
 articleTextRaw = getArticleText()
 articleSentences = tokenizeSentences(articleTextRaw)
-articleWords = tokenizeWords(articleSentences)
+articleWords = getWordsPerSentence(articleSentences)
 
 #Get Analytics
 stockSearchPattern = "[0-9]|[%$€£]|thousand|million|billion|trillion|profit|loss"
 keySentences = extractKeySentences(articleSentences, stockSearchPattern)
+wordsPerSentence = getWordsPerSentence(articleSentences)
 
 print("GOT:")
-print(articleWords)
+print(wordsPerSentence)
