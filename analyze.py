@@ -1,5 +1,13 @@
+import nltk
+nltk.download('punkt_tab')      
+nltk.download('wordnet')    
+nltk.download('omw-1.4') 
+nltk.download('averaged_perceptron_tagger_eng') 
+
 from random_username.generate import generate_username
 from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.stem import WordNetLemmatizer
+wordLemmatizer = WordNetLemmatizer()
 import re
 
 #Welcome User
@@ -77,7 +85,7 @@ def cleanseWordList(words):
     for word in words:
         cleansedWord = word.replace(".", "").lower()
         if (not re.search(invalidWordPattern, cleansedWord)) and len(cleansedWord) > 1:
-            cleansedWords.append(cleansedWord)
+            cleansedWords.append(wordLemmatizer.lemmatize(cleansedWord))
     return cleansedWords
 
 # Get User Details
