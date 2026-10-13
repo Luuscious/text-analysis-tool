@@ -1,16 +1,21 @@
 import nltk
+import re
 nltk.download('punkt_tab')      
 nltk.download('wordnet')    
 nltk.download('omw-1.4') 
 nltk.download('averaged_perceptron_tagger_eng') 
 
 from nltk.corpus import wordnet
+from nltk.corpus import stopwords
+nltk.download('stopwords')
 nltk.download('averaged_perceptron_tagger')
 from random_username.generate import generate_username
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.stem import WordNetLemmatizer
 wordLemmatizer = WordNetLemmatizer()
-import re
+stopList = stopwords.words('english')
+
+
 
 #Welcome User
 def welcomeUser():
@@ -107,9 +112,9 @@ def cleanseWordList(posTaggedWordTuples):
     return cleansedWords
 
 # Get User Details
-    welcomeUser()
-    username = getUsername()
-    greetUser(username)
+welcomeUser()
+username = getUsername()
+greetUser(username)
 
 #Extracting and Tokenizing text
 articleTextRaw = getArticleText()
