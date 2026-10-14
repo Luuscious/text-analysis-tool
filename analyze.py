@@ -1,10 +1,11 @@
 import nltk
 import re
+import matplotlib.pyplot as plt
 nltk.download('punkt_tab')      
 nltk.download('wordnet')    
 nltk.download('omw-1.4') 
 nltk.download('averaged_perceptron_tagger_eng') 
-
+from wordcloud import WordCloud
 from nltk.corpus import wordnet
 from nltk.corpus import stopwords
 nltk.download('stopwords')
@@ -130,8 +131,21 @@ wordsPerSentence = getWordsPerSentence(articleSentences)
 wordsPosTagged = nltk.pos_tag(articleWords)
 articleWordsCleansed = cleanseWordList(wordsPosTagged)
 
+# Generate the word cloud
+separator = " "
 
-print("GOT:")
-print(articleWordsCleansed)
+wordcloud = WordCloud(
+background_color="white",
+colormap="tab10",
+max_words=100,
+max_font_size=50,
+scale=3,
+collocations=False
+).generate(separator.join(articleWordsCleansed))
+
+wordcloud.to_file("result/wordcloud.png")
+
+#Print for testing
+print("Done!")
 
 
