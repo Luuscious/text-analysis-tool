@@ -5,17 +5,19 @@ nltk.download('punkt_tab')
 nltk.download('wordnet')    
 nltk.download('omw-1.4') 
 nltk.download('averaged_perceptron_tagger_eng') 
+nltk.download('stopwords')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('vader_lexicon')
 from wordcloud import WordCloud
 from nltk.corpus import wordnet
 from nltk.corpus import stopwords
-nltk.download('stopwords')
-nltk.download('averaged_perceptron_tagger')
 from random_username.generate import generate_username
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.stem import WordNetLemmatizer
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 wordLemmatizer = WordNetLemmatizer()
 stopList = stopwords.words('english')
-
+sentimentAnalyzer = SentimentIntensityAnalyzer()
 
 
 #Welcome User
@@ -145,7 +147,10 @@ collocations=False
 
 wordcloud.to_file("result/wordcloud.png")
 
+#Run sentiment analysis
+sentimentResult = sentimentAnalyzer.polarity_scores(articleTextRaw)
+
 #Print for testing
-print("Done!")
+print(sentimentResult)
 
 
