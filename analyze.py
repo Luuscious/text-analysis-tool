@@ -1,5 +1,4 @@
-import nltk
-import re
+import re, nltk, json
 import matplotlib.pyplot as plt
 nltk.download('punkt_tab')      
 nltk.download('wordnet')    
@@ -135,7 +134,7 @@ articleWordsCleansed = cleanseWordList(wordsPosTagged)
 
 # Generate the word cloud
 separator = " "
-
+wordCloudFilePath = "result/wordcloud.png"
 wordcloud = WordCloud(
 background_color="white",
 colormap="tab10",
@@ -145,12 +144,28 @@ scale=3,
 collocations=False
 ).generate(separator.join(articleWordsCleansed))
 
-wordcloud.to_file("result/wordcloud.png")
+wordcloud.to_file(wordCloudFilePath)
 
 #Run sentiment analysis
 sentimentResult = sentimentAnalyzer.polarity_scores(articleTextRaw)
 
+# Collate analysis into one dictionary
+finalResult = {
+     "username": username,
+     "data": {
+          "keySentences": keySentences,
+          "wordsPerSentence": round(wordsPerSentence, 1),
+          "sentiment": sentimentResult,
+          "wordCloudFilePath": wordCloudFilePath
+     },
+     "metadata": {
+          "sentencesAnalyzed": len(articleSentences),
+          "wordAnalyzed": len(articleWordsCleansed)
+     }
+}
+finalResultJson = json.dumps(finalResult, indent=4)
+
 #Print for testing
-print(sentimentResult)
+print(finalResultJson)
 
 
