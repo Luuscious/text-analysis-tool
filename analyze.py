@@ -72,13 +72,16 @@ def tokenizeWords(sentences):
         words.extend(word_tokenize(sentence))
     return words
 
+
 def extractKeySentences(sentences, searchPattern):
-     matchedSentences = []
-     for sentence in sentences:
-          #if sentence matches desired pattern, add to matchedSentences
-          if re.search(searchPattern, sentence.lower()):
-               matchedSentences.append(sentences)
-          return matchedSentences
+    matchedSentences = []
+
+    for sentence in sentences:
+        # If sentence matches desired pattern, add it to matchedSentences
+        if re.search(searchPattern, sentence.lower()):
+            matchedSentences.append(sentence)
+    return matchedSentences
+
 
 #Get the average words per sentence, excluding punctuation
 def getWordsPerSentence(sentences):
@@ -113,59 +116,59 @@ def cleanseWordList(posTaggedWordTuples):
             cleansedWords.append(wordLemmatizer.lemmatize(cleansedWord, treebankPosToWordnetPos(pos)))
     return cleansedWords
 
-# Get User Details
-welcomeUser()
-username = getUsername()
-greetUser(username)
 
-#Extracting and Tokenizing text
-articleTextRaw = getArticleText()
-articleSentences = tokenizeSentences(articleTextRaw)
-articleWords = tokenizeWords(articleSentences)
 
-#Get Analytics
-stockSearchPattern = "[0-9]|[%$€£]|thousand|million|billion|trillion|profit|loss"
-keySentences = extractKeySentences(articleSentences, stockSearchPattern)
-wordsPerSentence = getWordsPerSentence(articleSentences)
+def analyzeText(textToAnalyze):
+    articleSentences = tokenizeSentences(textToAnalyze)
+    articleWords = tokenizeWords(articleSentences)
 
-# Get Word Analytics
-wordsPosTagged = nltk.pos_tag(articleWords)
-articleWordsCleansed = cleanseWordList(wordsPosTagged)
+    #Get Analytics
+    stockSearchPattern = "[0-9]|[%$€£]|thousand|million|billion|trillion|profit|loss"
+    keySentences = extractKeySentences(articleSentences, stockSearchPattern)
+    wordsPerSentence = getWordsPerSentence(articleSentences)
 
-# Generate the word cloud
-separator = " "
-wordCloudFilePath = "result/wordcloud.png"
-wordcloud = WordCloud(
-background_color="white",
-colormap="tab10",
-max_words=100,
-max_font_size=50,
-scale=3,
-collocations=False
-).generate(separator.join(articleWordsCleansed))
+    # Get Word Analytics
+    wordsPosTagged = nltk.pos_tag(articleWords)
+    articleWordsCleansed = cleanseWordList(wordsPosTagged)
 
-wordcloud.to_file(wordCloudFilePath)
+    # Generate the word cloud
+    separator = " "
+    wordCloudFilePath = "result/wordcloud.png"
+    wordcloud = WordCloud(
+    background_color="white",
+    colormap="tab10",
+    max_words=100,
+    max_font_size=50,
+    scale=3,
+    collocations=False
+    ).generate(separator.join(articleWordsCleansed))
 
-#Run sentiment analysis
-sentimentResult = sentimentAnalyzer.polarity_scores(articleTextRaw)
+    wordcloud.to_file(wordCloudFilePath)
 
-# Collate analysis into one dictionary
-finalResult = {
-     "username": username,
-     "data": {
-          "keySentences": keySentences,
-          "wordsPerSentence": round(wordsPerSentence, 1),
-          "sentiment": sentimentResult,
-          "wordCloudFilePath": wordCloudFilePath
-     },
-     "metadata": {
-          "sentencesAnalyzed": len(articleSentences),
-          "wordAnalyzed": len(articleWordsCleansed)
-     }
-}
-finalResultJson = json.dumps(finalResult, indent=4)
+    #Run sentiment analysis
+    sentimentResult = sentimentAnalyzer.polarity_scores(textToAnalyze)
 
-#Print for testing
-print(finalResultJson)
+    # Collate analysis into one dictionary
+    finalResult = {
+        "data": {
+            "keySentences": keySentences,
+            "wordsPerSentence": round(wordsPerSentence, 1),
+            "sentiment": sentimentResult,
+            "wordCloudFilePath": wordCloudFilePath
+        },
+        "metadata": {
+            "sentencesAnalyzed": len(articleSentences),
+            "wordAnalyzed": len(articleWordsCleansed)
+        }
+    }
+    return finalResult
+
+def runAsFile():
+    # Get User Details
+    welcomeUser()
+    username = getUsername()
+    greetUser(username)
+    articleTextRaw = getArticleText()
+    analyzeText(articleTextRaw)
 
 
