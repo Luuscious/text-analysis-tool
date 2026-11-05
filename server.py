@@ -4,8 +4,13 @@ app = Flask(__name__)
 
 
 @app.route('/health')
-def hello_world():
+def healthCheck():
     return 'Flask server is up and running'
+
+
+@app.route('/analyze-stock')
+def analyzeStock():
+    return {'data': 'Analysis coming since'}
 
 if __name__ == '__main__':
     app.run(debug=True)
