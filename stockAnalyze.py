@@ -4,6 +4,7 @@ import analyze
 import json
 from datetime import datetime
 from bs4 import BeautifulSoup
+import pandas as pd
 
 
 def extractBasicInfo(data):
@@ -18,8 +19,15 @@ def extractBasicInfo(data):
 
 def getPriceHistory(company):
     historyDF = company.history(period='12mo')
+
+    if historyDF.empty:
+        raise ValueError(f"No price history returned for {company}")
+
     prices = historyDF['Open'].tolist()
     dates = historyDF.index.strftime("%Y-%m-%d").tolist()
+
+    historyDF.index = pd.to_datetime(historyDF.index)
+    
     return{
         'price': prices,
         'date': dates
@@ -73,6 +81,11 @@ def getCompanyStockInfo(tickerSymbol):
 
     #Get basic info on company
     basicInfo = extractBasicInfo(company.info)
+
+    #Check if company exists, if not, trigger error
+    if not basicInfo["longName"]:
+        raise NameError("Could not find stock info, symbol may be delisted or does not exist")
+
     priceHistory = getPriceHistory(company)
     futureEarningsDates = getEarningsDates(company)
     newsArticles = getCompanyNews(company)
@@ -92,8 +105,8 @@ def getCompanyStockInfo(tickerSymbol):
     # finalResultJson = json.dumps(newsTextAnalysis, indent=4)
     # print(finalResultJson)
 
-# companyStockAnalysis = getCompanyStockInfo("MSFT")
-# print(json.dumps(companyStockAnalysis, indent=4))
-
+if __name__ == "__main__":
+    companyStockAnalysis = getCompanyStockInfo("MSFT")
+    print(json.dumps(companyStockAnalysis, indent=4))
 
 
